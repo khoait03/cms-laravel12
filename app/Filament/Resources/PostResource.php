@@ -33,7 +33,8 @@ use Filament\Tables\Actions\RestoreBulkAction;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Str;
-use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
+use App\Filament\Components\ImageUploadComponent;
+use Illuminate\Support\Facades\Storage;
 
 class PostResource extends Resource
 {
@@ -83,30 +84,12 @@ class PostResource extends Resource
                                             ->rows(3)
                                             ->maxLength(500),
 
-                                        RichEditor::make('content')
-                                            ->label('Nội dung')
-                                            ->required()
-                                            ->toolbarButtons([
-                                                'attachFiles',
-                                                'blockquote',
-                                                'bold',
-                                                'bulletList',
-                                                'codeBlock',
-                                                'h2',
-                                                'h3',
-                                                'h4',
-                                                'italic',
-                                                'link',
-                                                'orderedList',
-                                                'redo',
-                                                'strike',
-                                                'table',
-                                                'undo',
-                                            ]),
+                                        
                                     ])
                                     ->columns(2),
 
-                                Section::make('Phân loại')
+
+                                     Section::make('Phân loại')
                                     ->schema([
                                         Select::make('categories')
                                             ->label('Danh mục')
@@ -140,6 +123,39 @@ class PostResource extends Resource
                                             ]),
                                     ])
                                     ->columns(2),
+
+
+                                     Section::make('Nội dung bài biết')
+                                    ->schema([
+                                        
+
+                                        RichEditor::make('content')
+                                            ->label('Nhập nội dung bài biết')
+                                            ->required()
+                                            ->toolbarButtons([
+                                                'attachFiles',
+                                                'blockquote',
+                                                'bold',
+                                                'bulletList',
+                                                'codeBlock',
+                                                'h2',
+                                                'h3',
+                                                'h4',
+                                                'italic',
+                                                'link',
+                                                'orderedList',
+                                                'redo',
+                                                'strike',
+                                                'table',
+                                                'undo',
+                                            ]),
+
+
+                                        
+                                    ])
+                                    ->columns(1),
+
+                               
                             ]),
 
                         Tabs\Tab::make('Hình ảnh & Xuất bản')
@@ -147,26 +163,41 @@ class PostResource extends Resource
                             ->schema([
                                 Section::make('Hình ảnh đại diện')
                                     ->schema([
-                                        FileUpload::make('thumbnail')
-                                            ->label('Ảnh đại diện')
-                                            ->image()
-                                            ->directory('posts')
-                                            ->visibility('public')
-                                            ->imageEditor()
-                                            ->imageEditorAspectRatios([
-                                                '16:9',
-                                                '4:3',
-                                                '1:1',
-                                            ])
-                                            // ->getUploadedFileNameForStorageUsing(
-                                            //     fn (TemporaryUploadedFile $file, Forms\Get $get): string => {
-                                            //         $slug = $get('slug') ?: Str::slug($get('title') ?: 'untitled');
-                                            //         $randomString = Str::random(5);
-                                            //         $extension = $file->getClientOriginalExtension();
-                                                    
-                                            //         return $slug . '-' . $randomString . '.' . $extension;
-                                            //     }
-                                            // ),
+                                        // FileUpload::make('thumbnail')
+                                        //     ->label('Ảnh đại diện')
+                                        //     ->image()
+                                        //     ->directory('posts')
+                                        //     ->visibility('public')
+                                        //     ->imageEditor()
+                                        //     ->imageEditorAspectRatios([
+                                        //         '16:9',
+                                        //         '4:3',
+                                        //         '1:1',
+                                        //     ])
+
+                                        // Sử dụng hàm để tạo FileUpload cho hình ảnh đại diện người dùng:
+                                        // ImageUploadComponent::make(
+                                        //      name: 'user_avatar',
+                                        //      slug: 'avatar',
+                                        //      default: 'default-avatar',
+                                        //      directory: 'images/avatars',
+                                        //      label: 'Chọn ảnh đại diện'
+                                        //  );
+                                        
+                                         Section::make('Ảnh bài viết')
+                                        ->schema([
+                                            ImageUploadComponent::make(
+                                                'thumbnail',
+                                                'title',
+                                                'Ảnh bài viết',
+                                                'images/post',
+                                                'Chọn ảnh bài viết',
+                                            )
+
+
+                                        ]),
+
+                                            
                                     ]),
 
                                 Section::make('Trạng thái xuất bản')

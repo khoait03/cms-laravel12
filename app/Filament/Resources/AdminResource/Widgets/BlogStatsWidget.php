@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\DB;
 
 class BlogStatsWidget extends BaseWidget
 {
+    protected ?string $heading = 'Thống kê';
+    
     protected static ?int $sort = 1;
     
     // Refresh widget mỗi 30 giây
